@@ -1,7 +1,6 @@
 # train.py — Experiment 6 & 8
-# Trains two models, tracks with MLflow, registers best model
-# Offline: python train.py
-# Online:  MLFLOW_TRACKING_URI set in .env → logs to Azure ML
+# Trains two models, tracks metrics with MLflow on Azure ML
+# Run: python train.py
 
 from dotenv import load_dotenv
 load_dotenv()
@@ -17,13 +16,11 @@ from sklearn.metrics import (
     precision_score, recall_score, roc_auc_score
 )
 import mlflow
-import mlflow.sklearn
 import joblib
 
 # ── MLflow setup ───────────────────────────────────────────────────────────
 MLFLOW_URI      = os.getenv("MLFLOW_TRACKING_URI", "mlruns")
 EXPERIMENT_NAME = "placement-prediction"
-MODEL_NAME      = "placement-classifier"
 
 mlflow.set_tracking_uri(MLFLOW_URI)
 mlflow.set_experiment(EXPERIMENT_NAME)
@@ -74,13 +71,11 @@ for name, clf in candidates.items():
             "roc_auc":   round(roc_auc_score(y_test, proba),   4),
         }
 
+        # Log only params and metrics to MLflow — no model logging
         mlflow.log_param("model_type", name)
+        mlflow.log_param("n_estimators", 150 if name == "RandomForest" else "N/A")
+        mlflow.log_param("max_depth", 8 if name == "RandomForest" else "N/A")
         mlflow.log_metrics(metrics)
-        mlflow.sklearn.log_model(
-            clf,
-            artifact_path="model",
-            registered_model_name=MODEL_NAME
-        )
 
         print(f"  [{name}] {metrics}")
 
@@ -96,7 +91,7 @@ for name, clf in candidates.items():
                 "metrics":    metrics
             }
 
-# ── Save best model ────────────────────────────────────────────────────────
+# ── Save best model locally ────────────────────────────────────────────────
 os.makedirs("models", exist_ok=True)
 joblib.dump(best_model, "models/model.pkl")
 with open("models/metadata.json", "w") as f:
@@ -108,5 +103,5 @@ print(f"  F1 Score   : {best_f1}")
 print(f"  Run ID     : {RUN_ID}")
 print(f"  Saved      : models/model.pkl + models/metadata.json")
 print(f"{'='*50}")
-print(f"\n  MLflow UI  : mlflow ui → http://127.0.0.1:5000")
+print(f"\n  MLflow UI  : mlflow ui -> http://127.0.0.1:5000")
 print(f"  Azure ML   : https://ml.azure.com\n")
