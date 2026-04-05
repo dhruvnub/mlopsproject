@@ -1,0 +1,14 @@
+# dvc.yaml — Experiment 7: DVC Pipeline
+# dvc repro  → runs pipeline
+# dvc push   → uploads to Azure Blob Storage
+# dvc pull   → downloads from Azure Blob Storage
+
+stages:
+  train:
+    cmd: python train.py
+    deps:
+      - train.py
+      - data/placementdata.csv
+    outs:
+      - models/model.pkl
+      - models/metadata.json
