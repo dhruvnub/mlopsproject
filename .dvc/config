@@ -1,0 +1,5 @@
+[core]
+    remote = azureblob
+['remote "azureblob"']
+    url = azure://mlopsfinal/data
+    connection_string = DefaultEndpointsProtocol=https;AccountName=mlopsfinal;AccountKey=YQBk9TKtbG9xPjpolr69I045ZXCsuMuoj7sS4RFadjU3MjUlD/LKnx10WNytbLhrGA45y0WfSQ/e+AStSFT+XA==;EndpointSuffix=core.windows.net
