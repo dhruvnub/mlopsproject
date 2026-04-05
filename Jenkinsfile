@@ -42,7 +42,10 @@ pipeline {
         stage('Train Model') {
             steps {
                 echo 'Training placement prediction model...'
-                bat "%PYTHON% train.py"
+                bat """
+                    set MLFLOW_TRACKING_URI=mlruns
+                    %PYTHON% train.py
+                """
             }
         }
 
@@ -97,7 +100,7 @@ pipeline {
 
     post {
         success {
-            echo 'Pipeline complete! Model trained on Azure ML, image pushed to ACR.'
+            echo 'Pipeline complete! Model trained, Azure ML job submitted, image pushed to ACR.'
             echo 'View results: https://ml.azure.com'
         }
         failure {
