@@ -1,0 +1,15 @@
+pandas
+scikit-learn
+mlflow
+fastapi
+uvicorn
+joblib
+pydantic
+python-multipart
+python-dotenv
+azureml-mlflow
+azure-identity
+azure-ai-ml
+dvc
+dvc-azure
+setuptools==68.0.0
