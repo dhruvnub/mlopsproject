@@ -1,5 +1,5 @@
 # azure_ml_job.py — Experiment 3
-# Called by Jenkins and GitHub Actions to submit training job to Azure ML
+# Called by Jenkins to submit training job to Azure ML
 
 import argparse
 import time
@@ -23,33 +23,12 @@ def submit(args):
     )
     print(f"Connected to workspace: {args.workspace}")
 
-    # Custom environment with all required packages
-    env = Environment(
-        image="mcr.microsoft.com/azureml/openmpi4.1.0-ubuntu20.04",
-        conda_file={
-            "name": "placement-env",
-            "channels": ["defaults", "conda-forge"],
-            "dependencies": [
-                "python=3.10",
-                "pip",
-                {"pip": [
-                    "pandas",
-                    "scikit-learn",
-                    "mlflow",
-                    "azureml-mlflow",
-                    "joblib",
-                    "python-dotenv"
-                ]}
-            ]
-        },
-        name="placement-training-env",
-    )
-
+    # Use curated Azure ML environment - no custom Docker image needed
     job = command(
         display_name    = f"jenkins-placement-{int(time.time())}",
-        command         = "python train.py",
+        command         = "pip install pandas scikit-learn mlflow azureml-mlflow joblib python-dotenv && python train.py",
         code            = ".",
-        environment     = env,
+        environment     = "AzureML-sklearn-1.0-ubuntu20.04-py38-cpu@latest",
         compute         = args.compute,
         experiment_name = args.experiment,
         environment_variables={
@@ -71,7 +50,7 @@ def submit(args):
             print("\n Job completed successfully!")
             break
         elif status in ("Failed", "Canceled"):
-            print("\n Job failed. Check Azure ML Studio → Jobs → Logs")
+            print("\n Job failed. Check Azure ML Studio - Jobs - Logs")
             raise RuntimeError(f"Azure ML job {status}")
         time.sleep(30)
 
