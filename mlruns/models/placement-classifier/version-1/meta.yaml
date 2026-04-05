@@ -1,0 +1,16 @@
+creation_timestamp: 1775423899881
+current_stage: None
+deployment_job_state: null
+description: null
+last_updated_timestamp: 1775423899881
+model_id: m-269e9bcda4534a13aef6a198f4e82e8f
+name: placement-classifier
+run_id: 8d8ba366fd3645b7ad9071720e218224
+run_link: null
+source: models:/m-269e9bcda4534a13aef6a198f4e82e8f
+status: READY
+status_message: null
+storage_location: file:///C:/Users/inYodreamzz/Desktop/mlops-project/mlruns/461012947655641709/models/m-269e9bcda4534a13aef6a198f4e82e8f/artifacts
+user_id: null
+version: 1
+workspace: default

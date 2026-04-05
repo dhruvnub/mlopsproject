@@ -1,0 +1,10 @@
+artifact_location: file:///C:/Users/inYodreamzz/Desktop/mlops-project/mlruns/461012947655641709/models/m-3695a3b0e2c849518a4866d04340301d/artifacts
+creation_timestamp: 1775423900033
+experiment_id: '461012947655641709'
+last_updated_timestamp: 1775423903680
+model_id: m-3695a3b0e2c849518a4866d04340301d
+model_type: null
+name: model
+source_run_id: 91df4ea856324132b7e208fbafae6000
+status: 2
+status_message: null

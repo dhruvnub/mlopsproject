@@ -1,0 +1,14 @@
+artifact_uri: file:///C:/Users/inYodreamzz/Desktop/mlops-project/mlruns/461012947655641709/91df4ea856324132b7e208fbafae6000/artifacts
+end_time: 1775423903727
+entry_point_name: ''
+experiment_id: '461012947655641709'
+lifecycle_stage: active
+run_id: 91df4ea856324132b7e208fbafae6000
+run_name: LogisticRegression-run
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1775423899916
+status: 3
+tags: []
+user_id: inYodreamzz
