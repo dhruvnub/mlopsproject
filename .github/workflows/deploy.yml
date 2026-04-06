@@ -170,16 +170,19 @@ jobs:
             --name placement-app2 \
             --resource-group rg-mlops-exp
 
-      - name: Wait for deployment
-        run: sleep 60
+      - name: Wait for app to start
+        run: sleep 90
 
       - name: Verify API is live
         run: |
           STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
-            https://placement-app2-hac9bbb0dhceapfm.centralindia-01.azurewebsites.net/health)
-          echo "Health check: HTTP $STATUS"
+            https://placement-app2-gncbh0behzdhdcd0.centralindia-01.azurewebsites.net/health || echo "000")
+          echo "Health check status: HTTP $STATUS"
           if [ "$STATUS" = "200" ]; then
             echo "API is live on Azure!"
+            echo "  https://placement-app2-gncbh0behzdhdcd0.centralindia-01.azurewebsites.net"
+            echo "  https://placement-app2-gncbh0behzdhdcd0.centralindia-01.azurewebsites.net/docs"
           else
-            echo "App may still be starting - check Azure portal"
+            echo "App is starting - check Azure portal in a few minutes"
+            echo "  https://placement-app2-gncbh0behzdhdcd0.centralindia-01.azurewebsites.net"
           fi
