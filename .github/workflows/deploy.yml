@@ -1,19 +1,5 @@
 # .github/workflows/deploy.yml — Experiment 2
 # Full Azure MLOps Pipeline — Manual trigger only
-# Run: GitHub repo → Actions → Placement MLOps Pipeline → Run workflow
-#
-# GitHub Secrets needed (repo → Settings → Secrets → Actions):
-#   AZURE_CLIENT_ID
-#   AZURE_CLIENT_SECRET
-#   AZURE_TENANT_ID
-#   AZURE_SUBSCRIPTION_ID
-#   AZURE_RESOURCE_GROUP         → rg-mlops-exp
-#   AZURE_ML_WORKSPACE           → mlops-workspace
-#   ACR_LOGIN_SERVER             → placementacr.azurecr.io
-#   ACR_USERNAME                 → placementacr
-#   ACR_PASSWORD                 → from ACR Access Keys
-#   AZURE_STORAGE_CONNECTION_STRING → from Storage Access Keys
-#   AZURE_WEBAPP_PUBLISH_PROFILE → from App Service → Download publish profile
 
 name: Placement MLOps Pipeline
 
@@ -87,14 +73,15 @@ jobs:
       - name: Submit Azure ML Training Job
         run: |
           python azure_ml_job.py \
-            --client-id       ${{ secrets.AZURE_CLIENT_ID }}       \
-            --client-secret   ${{ secrets.AZURE_CLIENT_SECRET }}   \
-            --tenant-id       ${{ secrets.AZURE_TENANT_ID }}       \
-            --subscription-id ${{ secrets.AZURE_SUBSCRIPTION_ID }} \
-            --resource-group  ${{ secrets.AZURE_RESOURCE_GROUP }}  \
-            --workspace       ${{ secrets.AZURE_ML_WORKSPACE }}    \
-            --experiment      placement-prediction                  \
-            --compute         placement-cluster
+            --client-id                 ${{ secrets.AZURE_CLIENT_ID }}                \
+            --client-secret             ${{ secrets.AZURE_CLIENT_SECRET }}            \
+            --tenant-id                 ${{ secrets.AZURE_TENANT_ID }}                \
+            --subscription-id           ${{ secrets.AZURE_SUBSCRIPTION_ID }}          \
+            --resource-group            ${{ secrets.AZURE_RESOURCE_GROUP }}           \
+            --workspace                 ${{ secrets.AZURE_ML_WORKSPACE }}             \
+            --storage-connection-string "${{ secrets.AZURE_STORAGE_CONNECTION_STRING }}" \
+            --experiment                placement-prediction                          \
+            --compute                   placement-cluster
 
 
   # ── 3. Quality Gate ────────────────────────────────────────────────────────

@@ -53,21 +53,23 @@ pipeline {
             steps {
                 echo 'Submitting training job to Azure ML...'
                 withCredentials([
-                    string(credentialsId: 'AZURE_CLIENT_ID',       variable: 'AZ_CLIENT_ID'),
-                    string(credentialsId: 'AZURE_CLIENT_SECRET',    variable: 'AZ_CLIENT_SECRET'),
-                    string(credentialsId: 'AZURE_TENANT_ID',        variable: 'AZ_TENANT_ID'),
-                    string(credentialsId: 'AZURE_SUBSCRIPTION_ID',  variable: 'AZ_SUB_ID'),
+                    string(credentialsId: 'AZURE_CLIENT_ID',                 variable: 'AZ_CLIENT_ID'),
+                    string(credentialsId: 'AZURE_CLIENT_SECRET',              variable: 'AZ_CLIENT_SECRET'),
+                    string(credentialsId: 'AZURE_TENANT_ID',                  variable: 'AZ_TENANT_ID'),
+                    string(credentialsId: 'AZURE_SUBSCRIPTION_ID',            variable: 'AZ_SUB_ID'),
+                    string(credentialsId: 'AZURE_STORAGE_CONNECTION_STRING',  variable: 'AZ_STORAGE'),
                 ]) {
                     bat """
                         %PYTHON% azure_ml_job.py ^
-                            --client-id       %AZ_CLIENT_ID%     ^
-                            --client-secret   %AZ_CLIENT_SECRET% ^
-                            --tenant-id       %AZ_TENANT_ID%     ^
-                            --subscription-id %AZ_SUB_ID%        ^
-                            --resource-group  %RESOURCE_GROUP%   ^
-                            --workspace       %WORKSPACE_NAME%   ^
-                            --experiment      %EXPERIMENT%       ^
-                            --compute         %COMPUTE%
+                            --client-id                 %AZ_CLIENT_ID%     ^
+                            --client-secret             %AZ_CLIENT_SECRET% ^
+                            --tenant-id                 %AZ_TENANT_ID%     ^
+                            --subscription-id           %AZ_SUB_ID%        ^
+                            --resource-group            %RESOURCE_GROUP%   ^
+                            --workspace                 %WORKSPACE_NAME%   ^
+                            --storage-connection-string "%AZ_STORAGE%"     ^
+                            --experiment                %EXPERIMENT%       ^
+                            --compute                   %COMPUTE%
                     """
                 }
             }
@@ -100,7 +102,7 @@ pipeline {
 
     post {
         success {
-            echo 'Pipeline complete! Model trained, Azure ML job submitted, image pushed to ACR.'
+            echo 'Pipeline complete! Model trained on Azure ML, image pushed to ACR.'
             echo 'View results: https://ml.azure.com'
         }
         failure {

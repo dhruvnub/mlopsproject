@@ -1,10 +1,9 @@
 # azure_ml_job.py — Experiment 3
-# Called by Jenkins to submit training job to Azure ML
+# Called by Jenkins and GitHub Actions to submit training job to Azure ML
 
 import argparse
 import time
 from azure.ai.ml import MLClient, command
-from azure.ai.ml.entities import Environment
 from azure.identity import ClientSecretCredential
 
 
@@ -23,16 +22,22 @@ def submit(args):
     )
     print(f"Connected to workspace: {args.workspace}")
 
-    # Use curated Azure ML environment - no custom Docker image needed
+    # Command installs deps, pulls data via DVC, then trains
     job = command(
         display_name    = f"jenkins-placement-{int(time.time())}",
-        command         = "pip install pandas scikit-learn mlflow azureml-mlflow joblib python-dotenv && python train.py",
+        command         = (
+            "pip install pandas scikit-learn mlflow azureml-mlflow "
+            "joblib python-dotenv dvc dvc-azure && "
+            "dvc pull --force && "
+            "python train.py"
+        ),
         code            = ".",
         environment     = "AzureML-sklearn-1.0-ubuntu20.04-py38-cpu@latest",
         compute         = args.compute,
         experiment_name = args.experiment,
         environment_variables={
-            "MLFLOW_TRACKING_URI": "azureml://tracking"
+            "MLFLOW_TRACKING_URI":              "azureml://tracking",
+            "AZURE_STORAGE_CONNECTION_STRING":   args.storage_connection_string,
         },
     )
 
@@ -59,12 +64,13 @@ def submit(args):
 
 if __name__ == "__main__":
     p = argparse.ArgumentParser()
-    p.add_argument("--client-id",       required=True)
-    p.add_argument("--client-secret",   required=True)
-    p.add_argument("--tenant-id",       required=True)
-    p.add_argument("--subscription-id", required=True)
-    p.add_argument("--resource-group",  required=True)
-    p.add_argument("--workspace",       required=True)
-    p.add_argument("--experiment",      default="placement-prediction")
-    p.add_argument("--compute",         default="placement-cluster")
+    p.add_argument("--client-id",                  required=True)
+    p.add_argument("--client-secret",              required=True)
+    p.add_argument("--tenant-id",                  required=True)
+    p.add_argument("--subscription-id",            required=True)
+    p.add_argument("--resource-group",             required=True)
+    p.add_argument("--workspace",                  required=True)
+    p.add_argument("--storage-connection-string",  required=True)
+    p.add_argument("--experiment",                 default="placement-prediction")
+    p.add_argument("--compute",                    default="placement-cluster")
     submit(p.parse_args())
